@@ -35,9 +35,12 @@ llm = AzureOpenAI(
 class StreamlitResponse(ResponseParser):
     def __init__(self, context) -> None:
         super().__init__(context)
+        self.last_dataframe = None
 
     def format_dataframe(self, result):
-        st.dataframe(result["value"])
+        df_result = result["value"]
+        st.dataframe(df_result)
+        st.session_state["query_result_df"] = df_result
 
     def format_plot(self, result):
         try:
@@ -76,3 +79,12 @@ if uploaded_file:
         )
 
         query_engine.chat(query)
+
+        if "query_result_df" in st.session_state:
+            csv_bytes = st.session_state["query_result_df"].to_csv(index=False).encode("utf-8")
+            st.download_button(
+                label="⬇️ Download Result as CSV",
+                data=csv_bytes,
+                file_name="query_result.csv",
+                mime="text/csv",
+            )
