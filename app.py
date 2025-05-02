@@ -35,7 +35,6 @@ llm = AzureOpenAI(
 class StreamlitResponse(ResponseParser):
     def __init__(self, context) -> None:
         super().__init__(context)
-        self.last_dataframe = None
 
     def format_dataframe(self, result):
         df_result = result["value"]
