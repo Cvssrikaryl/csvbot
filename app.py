@@ -166,6 +166,7 @@ if uploaded_file:
                 mime="text/csv",
             )
 
+
     except Exception as e:
         st.error("❌ Error reading the CSV file.")
         st.exception(e)
