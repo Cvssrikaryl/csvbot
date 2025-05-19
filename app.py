@@ -66,7 +66,7 @@ class StreamlitChatResponse(ResponseParser):
 
 # Streamlit app config
 st.set_page_config(page_title="CSV Chatbot", layout="centered")
-st.title("🧠 CSV Chatbot using GPT and PandasAI")
+st.title("FileQA bot")
 
 st.markdown("""
 <style>
@@ -149,6 +149,20 @@ if uploaded_file:
             st.markdown(user_input)
 
         st.session_state["current_query"] = user_input
+
+        # Handle greetings or out-of-scope input
+        greetings = ["hi", "hello", "hey", "hola"]
+        out_of_scope = ["weather", "news", "joke", "who is", "what is your name"]
+
+        user_input_lower = user_input.strip().lower()
+        if any(user_input_lower.startswith(greet) for greet in greetings):
+            bot_msg = "Hello! I am a CSV Question Answering bot. How can I assist you with your data?"
+            st.session_state["chat_history"].append({"user": user_input, "bot": bot_msg, "bot_type": "text"})
+            st.experimental_rerun()
+        elif any(phrase in user_input_lower for phrase in out_of_scope):
+            bot_msg = "I'm here to help with questions about your uploaded CSV data. Please ask something related to that."
+            st.session_state["chat_history"].append({"user": user_input, "bot": bot_msg, "bot_type": "text"})
+            st.experimental_rerun()
 
         query_engine = SmartDataframe(
             df,
